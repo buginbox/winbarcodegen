@@ -52,5 +52,15 @@ public enum Barcodes
 	/// <summary>
 	/// ISBN barcode.
 	/// </summary>
-	ISBN = 4
+	ISBN = 4,
+
+	/// <summary>
+	/// Code39
+	/// </summary>
+	Code39 = 5,
+    
+	/// <summary>
+	/// Code39 extended
+	/// </summary>
+	Code39Extended = 6
 }

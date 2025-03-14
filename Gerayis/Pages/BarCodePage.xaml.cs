@@ -41,363 +41,415 @@ namespace Gerayis.Pages;
 /// </summary>
 public partial class BarCodePage : Page
 {
-	private static SKFont BarCodeFont
-	{
-		get => new();
-	}
+    private static SKFont BarCodeFont
+    {
+        get => new();
+    }
 
-	internal string Error { get; set; }
+    internal string Error { get; set; }
 
-	public BarCodePage()
-	{
-		InitializeComponent();
-		InitUI(); // Load UI
-	}
+    public BarCodePage()
+    {
+        InitializeComponent();
+        InitUI(); // Load UI
+    }
 
-	private void InitUI()
-	{
-		BarCodeTypeComboBox.SelectedIndex = (int)Global.Settings.DefaultBarCodeType.Value; // Select the first item
+    private void InitUI()
+    {
+        BarCodeTypeComboBox.SelectedIndex = (int)Global.Settings.DefaultBarCodeType.Value; // Select the first item
 
-		if (Global.Settings.GenerateBarCodeOnStart.Value)
-		{
-			BarCodeStringTxt.Text = Global.Settings.DefaultBarCodeType switch
-			{
-				Barcodes.Code128 => Properties.Resources.Gerayis, // Text
-				Barcodes.Code11 => "456146121546", // Code11
-				Barcodes.ISBN => "978146121546", // ISBN starts with 978
-				Barcodes.MSI => "163657455245", // MSI
-				Barcodes.UPCA => "12659456240", // UPC-A
-				_ => Properties.Resources.Gerayis // Default value
-			}; // Set text depending on the bar code type
+        if (Global.Settings.GenerateBarCodeOnStart.Value)
+        {
+            BarCodeStringTxt.Text = Global.Settings.DefaultBarCodeType switch
+            {
+                Barcodes.Code128 => Properties.Resources.Gerayis, // Text
+                Barcodes.Code11 => "456146121546", // Code11
+                Barcodes.ISBN => "978146121546", // ISBN starts with 978
+                Barcodes.MSI => "163657455245", // MSI
+                Barcodes.UPCA => "12659456240", // UPC-A
+                Barcodes.Code39 => Properties.Resources.GerayisUpper, // Text
+                Barcodes.Code39Extended => Properties.Resources.GerayisUpperExt, // Text
+                _ => Properties.Resources.Gerayis // Default value
+            }; // Set text depending on the bar code type
 
-			GenerateBarCode(BarCodeStringTxt.Text, null, Global.Settings.DefaultBarCodeType.Value); // Generate bar code
-		}
-	}
+            GenerateBarCode(BarCodeStringTxt.Text, null, Global.Settings.DefaultBarCodeType.Value); // Generate bar code
+        }
+    }
 
-	BitmapSource bitmapSource;
-	internal void GenerateBtn_Click(object sender, RoutedEventArgs e)
-	{
-		GenerateBarCode(BarCodeStringTxt.Text, sender, (Barcodes)BarCodeTypeComboBox.SelectedIndex); // Generate
-	}
+    BitmapSource bitmapSource;
+    internal void GenerateBtn_Click(object sender, RoutedEventArgs e)
+    {
+        GenerateBarCode(BarCodeStringTxt.Text, sender, (Barcodes)BarCodeTypeComboBox.SelectedIndex); // Generate
+    }
 
-	internal void GenerateBarCode(string text, object sender, Barcodes barcodeType)
-	{
-		try
-		{
-			border.Background = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["LightAccentColor"].ToString()) }; // Set the background
-			BorderIconTxt.Foreground = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["AccentColor"].ToString()) }; // Set the foreground
-			BorderMsgTxt.Foreground = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["AccentColor"].ToString()) }; // Set the foreground
+    internal void GenerateBarCode(string text, object sender, Barcodes barcodeType)
+    {
+        try
+        {
+            border.Background = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["LightAccentColor"].ToString()) }; // Set the background
+            BorderIconTxt.Foreground = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["AccentColor"].ToString()) }; // Set the foreground
+            BorderMsgTxt.Foreground = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["AccentColor"].ToString()) }; // Set the foreground
 
-			BorderIconTxt.Text = "\uF299"; // Set icon
-			BorderMsgTxt.Text = Properties.Resources.SuccessBarCodeGenerated; // Set text
+            BorderIconTxt.Text = "\uF299"; // Set icon
+            BorderMsgTxt.Text = Properties.Resources.SuccessBarCodeGenerated; // Set text
 
-			System.Drawing.Color foreColor = System.Drawing.Color.White; // Foreground
-			System.Drawing.Color backColor = System.Drawing.Color.Black; // Background
-			ShowErrorBtn.Visibility = Visibility.Collapsed; // Hide
+            System.Drawing.Color foreColor = System.Drawing.Color.White; // Foreground
+            System.Drawing.Color backColor = System.Drawing.Color.Black; // Background
+            ShowErrorBtn.Visibility = Visibility.Collapsed; // Hide
 
-			if (!string.IsNullOrEmpty(Global.Settings.BarCodeBackgroundColor) && !string.IsNullOrEmpty(Global.Settings.BarCodeForegroundColor))
-			{
-				string[] fC = Global.Settings.BarCodeForegroundColor.Split(new string[] { ";" }, StringSplitOptions.None); // Split
-				string[] bC = Global.Settings.BarCodeBackgroundColor.Split(new string[] { ";" }, StringSplitOptions.None); // Split
+            if (!string.IsNullOrEmpty(Global.Settings.BarCodeBackgroundColor) && !string.IsNullOrEmpty(Global.Settings.BarCodeForegroundColor))
+            {
+                string[] fC = Global.Settings.BarCodeForegroundColor.Split(new string[] { ";" }, StringSplitOptions.None); // Split
+                string[] bC = Global.Settings.BarCodeBackgroundColor.Split(new string[] { ";" }, StringSplitOptions.None); // Split
 
-				foreColor = System.Drawing.Color.FromArgb((byte)int.Parse(fC[0]), (byte)int.Parse(fC[1]), (byte)int.Parse(fC[2])); // Create new color
-				backColor = System.Drawing.Color.FromArgb((byte)int.Parse(bC[0]), (byte)int.Parse(bC[1]), (byte)int.Parse(bC[2])); // Create new color
-			}
+                foreColor = System.Drawing.Color.FromArgb((byte)int.Parse(fC[0]), (byte)int.Parse(fC[1]), (byte)int.Parse(fC[2])); // Create new color
+                backColor = System.Drawing.Color.FromArgb((byte)int.Parse(bC[0]), (byte)int.Parse(bC[1]), (byte)int.Parse(bC[2])); // Create new color
+            }
 
-			if (!string.IsNullOrEmpty(text) && !string.IsNullOrWhiteSpace(text))
-			{
-				// Find the barcode type
-				BarcodeStandard.Type barType = barcodeType switch
-				{
-					Barcodes.Code128 => BarcodeStandard.Type.Code128, // Code128
-					Barcodes.Code11 => BarcodeStandard.Type.Code11, // Code11
-					Barcodes.UPCA => BarcodeStandard.Type.UpcA, // UPC-A
-					Barcodes.MSI => BarcodeStandard.Type.MsiMod10, // MSI
-					Barcodes.ISBN => BarcodeStandard.Type.Isbn, // ISBN
-					_ => BarcodeStandard.Type.Code128 // Default value
-				}; // Get
+            if (!string.IsNullOrEmpty(text) && !string.IsNullOrWhiteSpace(text))
+            {
+                // Find the barcode type
+                BarcodeStandard.Type barType = barcodeType switch
+                {
+                    Barcodes.Code128 => BarcodeStandard.Type.Code128, // Code128
+                    Barcodes.Code11 => BarcodeStandard.Type.Code11, // Code11
+                    Barcodes.UPCA => BarcodeStandard.Type.UpcA, // UPC-A
+                    Barcodes.MSI => BarcodeStandard.Type.MsiMod10, // MSI
+                    Barcodes.ISBN => BarcodeStandard.Type.Isbn, // ISBN
+                    Barcodes.Code39 => BarcodeStandard.Type.Code39, // Code39
+                    Barcodes.Code39Extended => BarcodeStandard.Type.Code39Extended, // Code39 extended
+                    _ => BarcodeStandard.Type.Code128 // Default value
+                }; // Get
 
-				// Generate bar code
-				
-				BarcodeStandard.Barcode barcode = new() { IncludeLabel = true, LabelFont = BarCodeFont }; // Create a new barcode generator
-				var image = System.Drawing.Image.FromStream(barcode.Encode(barType, text, ToSkiaColor(foreColor), ToSkiaColor(backColor), BarCodeStringTxt.Text.Length * 50, 240).Encode().AsStream()); // Generate
+                // Generate bar code
+                BarcodeStandard.Barcode barcode = new() { IncludeLabel = true, LabelFont = BarCodeFont }; // Create a new barcode generator
+                var image = System.Drawing.Image.FromStream(barcode.Encode(barType, text, ToSkiaColor(foreColor), ToSkiaColor(backColor), BarCodeStringTxt.Text.Length * 50, 240).Encode().AsStream()); // Generate
 
-				// Create and set image
-				var bitmap = new System.Drawing.Bitmap(image);
-				IntPtr bmpPt = bitmap.GetHbitmap();
-				bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bmpPt, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                // Create and set image
+                var bitmap = new System.Drawing.Bitmap(image);
+                IntPtr bmpPt = bitmap.GetHbitmap();
+                bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bmpPt, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
 
-				bitmapSource.Freeze();
-				BarCodeImg.Source = bitmapSource;
+                bitmapSource.Freeze();
+                BarCodeImg.Source = bitmapSource;
 
-				if (sender is not HistoryItem)
-				{
-					bool contains = false;
+                if (sender is not HistoryItem)
+                {
+                    bool contains = false;
 
-					for (int i = 0; i < BarCodeHistory.Children.Count; i++)
-					{
-						var historyItem = (HistoryItem)BarCodeHistory.Children[i];
-						contains = historyItem.ContentText == text && historyItem.BarcodeType == barcodeType;
-					}
+                    for (int i = 0; i < BarCodeHistory.Children.Count; i++)
+                    {
+                        var historyItem = (HistoryItem)BarCodeHistory.Children[i];
+                        contains = historyItem.ContentText == text && historyItem.BarcodeType == barcodeType;
+                    }
 
-					if (!contains)
-					{
-						BarCodeHistory.Children.Add(new HistoryItem(text, bitmapSource, BarCodeHistory, AppPages.BarCode, barcodeType));
-					}
-				}
-			}
-			else
-			{
-				MessageBox.Show(Properties.Resources.PleaseSpecifyValue, Properties.Resources.Gerayis, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-			}
-		}
-		catch (Exception ex)
-		{
-			border.Background = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["Red"].ToString()) }; // Set the background
-			BorderIconTxt.Foreground = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["DarkRed"].ToString()) }; // Set the foreground
-			BorderMsgTxt.Foreground = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["DarkRed"].ToString()) }; // Set the foreground
+                    if (!contains)
+                    {
+                        BarCodeHistory.Children.Add(new HistoryItem(text, bitmapSource, BarCodeHistory, AppPages.BarCode, barcodeType));
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show(Properties.Resources.PleaseSpecifyValue, Properties.Resources.Gerayis, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+        catch (Exception ex)
+        {
+            border.Background = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["Red"].ToString()) }; // Set the background
+            BorderIconTxt.Foreground = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["DarkRed"].ToString()) }; // Set the foreground
+            BorderMsgTxt.Foreground = new SolidColorBrush { Color = (Color)ColorConverter.ConvertFromString(App.Current.Resources["DarkRed"].ToString()) }; // Set the foreground
 
-			BorderIconTxt.Text = "\uF36E"; // Set icon
-			BorderMsgTxt.Text = Properties.Resources.NoUseSpecialChars; // Set text
+            BorderIconTxt.Text = "\uF36E"; // Set icon
+            BorderMsgTxt.Text = Properties.Resources.NoUseSpecialChars; // Set text
 
-			Error = ex.Message; // Set error message
-			ShowErrorBtn.Visibility = Visibility.Visible; // Show
-		}
-	}
+            Error = ex.Message; // Set error message
+            ShowErrorBtn.Visibility = Visibility.Visible; // Show
+        }
+    }
 
-	private SKColor ToSkiaColor(System.Drawing.Color color) => new (color.R, color.G, color.B);
+    private SKColor ToSkiaColor(System.Drawing.Color color) => new(color.R, color.G, color.B);
 
-	internal void CopyBtn_Click(object sender, RoutedEventArgs e)
-	{
-		if (BarCodeImg.Source is not null) // If there is an image
-		{
-			Clipboard.SetImage(bitmapSource); // Copy to clipboard 
-		}
-	}
+    internal void CopyBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (BarCodeImg.Source is not null) // If there is an image
+        {
+            Clipboard.SetImage(bitmapSource); // Copy to clipboard 
+        }
+    }
 
-	private void SaveBtn_Click(object sender, RoutedEventArgs e)
-	{
-		SaveFileDialog saveFileDialog = new()
-		{
-			Filter = "PNG|*.png|JPG|*.jpg|JPEG|*.jpeg",
-			FileName = $"{BarCodeStringTxt.Text}",
-			Title = Properties.Resources.Save,
-			FilterIndex = (int)Global.Settings.DefaultBarCodeFileExtension.Value + 1
-		}; // Create Save file dialog
+    private void SaveBtn_Click(object sender, RoutedEventArgs e)
+    {
+        SaveFileDialog saveFileDialog = new()
+        {
+            Filter = "PNG|*.png|JPG|*.jpg|JPEG|*.jpeg",
+            FileName = $"{BarCodeStringTxt.Text}",
+            Title = Properties.Resources.Save,
+            FilterIndex = (int)Global.Settings.DefaultBarCodeFileExtension.Value + 1
+        }; // Create Save file dialog
 
-		if (saveFileDialog.ShowDialog() ?? true)
-		{
-			Global.SaveImage(saveFileDialog.FileName, bitmapSource, System.IO.Path.GetExtension(saveFileDialog.FileName));
-		}
-	}
+        if (saveFileDialog.ShowDialog() ?? true)
+        {
+            Global.SaveImage(saveFileDialog.FileName, bitmapSource, System.IO.Path.GetExtension(saveFileDialog.FileName));
+        }
+    }
 
-	internal void HistoryBtn_Click(object sender, RoutedEventArgs e)
-	{
-		if (BarCodeHistory.Children.Count > 0)
-		{
-			if (sender is not HistoryItem)
-			{
-				if (Content.Visibility == Visibility.Visible)
-				{
-					Content.Visibility = Visibility.Collapsed; // Hide
-					HistoryScroll.Visibility = Visibility.Visible; // Show
+    internal void HistoryBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (BarCodeHistory.Children.Count > 0)
+        {
+            if (sender is not HistoryItem)
+            {
+                if (Content.Visibility == Visibility.Visible)
+                {
+                    Content.Visibility = Visibility.Collapsed; // Hide
+                    HistoryScroll.Visibility = Visibility.Visible; // Show
 
-					HistoryBtn.Content = "\uF36A"; // Set text 
-				}
-				else
-				{
-					Content.Visibility = Visibility.Visible; // Show
-					HistoryScroll.Visibility = Visibility.Collapsed; // Hide
+                    HistoryBtn.Content = "\uF36A"; // Set text 
+                }
+                else
+                {
+                    Content.Visibility = Visibility.Visible; // Show
+                    HistoryScroll.Visibility = Visibility.Collapsed; // Hide
 
-					HistoryBtn.Content = "\uF47F"; // Set text
-				}
-			}
-		}
-		else
-		{
-			Content.Visibility = Visibility.Visible; // Show
-			HistoryScroll.Visibility = Visibility.Collapsed; // Hide
+                    HistoryBtn.Content = "\uF47F"; // Set text
+                }
+            }
+        }
+        else
+        {
+            Content.Visibility = Visibility.Visible; // Show
+            HistoryScroll.Visibility = Visibility.Collapsed; // Hide
 
-			HistoryBtn.Content = "\uF47F"; // Set text
+            HistoryBtn.Content = "\uF47F"; // Set text
 
-			if (sender is not HistoryItem)
-			{
-				MessageBox.Show(Properties.Resources.HistoryEmpty, Properties.Resources.Gerayis, MessageBoxButton.OK, MessageBoxImage.Information); // Show
-			}
-		}
-	}
+            if (sender is not HistoryItem)
+            {
+                MessageBox.Show(Properties.Resources.HistoryEmpty, Properties.Resources.Gerayis, MessageBoxButton.OK, MessageBoxImage.Information); // Show
+            }
+        }
+    }
 
-	private void BarCodeTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-	{
-		if (BarCodeStringTxt.Text == Properties.Resources.Gerayis ||
-			BarCodeStringTxt.Text == "456146121546" ||
-			BarCodeStringTxt.Text == "978146121546" ||
-			BarCodeStringTxt.Text == "163657455245" ||
-			BarCodeStringTxt.Text == "12659456240")
-		{
-			BarCodeStringTxt.Text = (Barcodes)BarCodeTypeComboBox.SelectedIndex switch
-			{
-				Barcodes.Code128 => Properties.Resources.Gerayis, // Text
-				Barcodes.Code11 => "456146121546", // Code11
-				Barcodes.ISBN => "978146121546", // ISBN starts with 978
-				Barcodes.MSI => "163657455245", // MSI
-				Barcodes.UPCA => "12659456240", // UPC-A
-				_ => Properties.Resources.Gerayis // Default value
-			};
-		}
+    private void BarCodeTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (BarCodeStringTxt.Text == Properties.Resources.Gerayis ||
+            BarCodeStringTxt.Text == "456146121546" ||
+            BarCodeStringTxt.Text == "978146121546" ||
+            BarCodeStringTxt.Text == "163657455245" ||
+            BarCodeStringTxt.Text == "12659456240" ||
+            BarCodeStringTxt.Text == Properties.Resources.GerayisUpper ||
+            BarCodeStringTxt.Text == Properties.Resources.GerayisUpperExt)
+        {
+            BarCodeStringTxt.Text = (Barcodes)BarCodeTypeComboBox.SelectedIndex switch
+            {
+                Barcodes.Code128 => Properties.Resources.Gerayis, // Text
+                Barcodes.Code11 => "456146121546", // Code11
+                Barcodes.ISBN => "978146121546", // ISBN starts with 978
+                Barcodes.MSI => "163657455245", // MSI
+                Barcodes.UPCA => "12659456240", // UPC-A
+                Barcodes.Code39 => Properties.Resources.GerayisUpper, // Text
+                Barcodes.Code39Extended => Properties.Resources.GerayisUpperExt, // Text
+                _ => Properties.Resources.Gerayis // Default value
+            };
+        }
 
-		UpdateValidIcon(); // Update valid icon
-	}
+        UpdateValidIcon(); // Update valid icon
+    }
 
-	private void ShowErrorBtn_Click(object sender, RoutedEventArgs e)
-	{
-		MessageBox.Show(Error, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-	}
+    private void ShowErrorBtn_Click(object sender, RoutedEventArgs e)
+    {
+        MessageBox.Show(Error, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+    }
 
-	private void CopyGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-	{
-		CopyGrid.Visibility = Visibility.Visible; // Show
-	}
+    private void CopyGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        CopyGrid.Visibility = Visibility.Visible; // Show
+    }
 
-	private void CopyGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-	{
-		CopyGrid.Visibility = Visibility.Collapsed; // Hide
-	}
+    private void CopyGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        CopyGrid.Visibility = Visibility.Collapsed; // Hide
+    }
 
-	private void BarCodeImg_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-	{
-		if (BarCodeImg.Source is not null) // If the image is not empty
-		{
-			Clipboard.SetImage(bitmapSource); // Copy to clipboard 
-		}
-	}
+    private void BarCodeImg_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (BarCodeImg.Source is not null) // If the image is not empty
+        {
+            Clipboard.SetImage(bitmapSource); // Copy to clipboard 
+        }
+    }
 
-	private void SeeFullBarCodeBtn_Click(object sender, RoutedEventArgs e)
-	{
-		if (BarCodeImg.Source is not null)
-		{
-			new SeeFullBarCodeWindow(bitmapSource, AppPages.BarCode).Show(); // Show bar code
-		}
-	}
+    private void SeeFullBarCodeBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (BarCodeImg.Source is not null)
+        {
+            new SeeFullBarCodeWindow(bitmapSource, AppPages.BarCode).Show(); // Show bar code
+        }
+    }
 
-	bool infoPanelToggled = false;
-	private void BarCodeInfoBtn_Click(object sender, RoutedEventArgs e)
-	{
-		if (infoPanelToggled)
-		{
-			InfoPanel.Visibility = Visibility.Collapsed; // Hide
-			Content.Visibility = Visibility.Visible; // Show
-			infoPanelToggled = false; // Set to false
-		}
-		else
-		{
-			InfoPanel.Visibility = Visibility.Visible; // Show
-			Content.Visibility = Visibility.Collapsed; // Hide
-			infoPanelToggled = true; // Set to true
+    bool infoPanelToggled = false;
+    private void BarCodeInfoBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (infoPanelToggled)
+        {
+            InfoPanel.Visibility = Visibility.Collapsed; // Hide
+            Content.Visibility = Visibility.Visible; // Show
+            infoPanelToggled = false; // Set to false
+        }
+        else
+        {
+            InfoPanel.Visibility = Visibility.Visible; // Show
+            Content.Visibility = Visibility.Collapsed; // Hide
+            infoPanelToggled = true; // Set to true
 
-			LoadInfoPanel((Barcodes)BarCodeTypeComboBox.SelectedIndex); // Load info panel
-		}
-	}
+            LoadInfoPanel((Barcodes)BarCodeTypeComboBox.SelectedIndex); // Load info panel
+        }
+    }
 
-	private void LoadInfoPanel(Barcodes barcode)
-	{
-		switch (barcode)
-		{
-			case Barcodes.Code11:
-				// Update icons
-				NumbersIconTxt.Text = "\uF299"; // Set text
-				CharsIconTxt.Text = "\uF36E"; // Set text
-				MinLengthIconTxt.Text = "\uF36E"; // Set text
+    private void LoadInfoPanel(Barcodes barcode)
+    {
+        switch (barcode)
+        {
+            case Barcodes.Code11:
+                // Update icons
+                NumbersIconTxt.Text = "\uF299"; // Set text
+                CharsIconTxt.Text = "\uF36E"; // Set text
+                MinLengthIconTxt.Text = "\uF36E"; // Set text
+                SpecialCharsIconTxt.Text = "\uF36E"; // Set text
 
-				// Update colors
-				NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
-				CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
-				MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
-				break;
-			case Barcodes.Code128:
-				// Update icons
-				NumbersIconTxt.Text = "\uF299"; // Set text
-				CharsIconTxt.Text = "\uF299"; // Set text
-				MinLengthIconTxt.Text = "\uF36E"; // Set text
+                // Update colors
+                NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                SpecialCharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                break;
 
-				// Update colors
-				NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
-				CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
-				MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
-				break;
-			case Barcodes.ISBN:
-				// Update icons
-				NumbersIconTxt.Text = "\uF299"; // Set text
-				CharsIconTxt.Text = "\uF36E"; // Set text
-				MinLengthIconTxt.Text = "\uF299"; // Set text
+            case Barcodes.Code128:
+                // Update icons
+                NumbersIconTxt.Text = "\uF299"; // Set text
+                CharsIconTxt.Text = "\uF299"; // Set text
+                MinLengthIconTxt.Text = "\uF36E"; // Set text
+                SpecialCharsIconTxt.Text = "\uF36E"; // Set text
 
-				// Update text
-				MinLengthTxt.Text = $"{Properties.Resources.MinLength} - 9/10/12/13"; // Set text
+                // Update colors
+                NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                SpecialCharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                break;
 
-				// Update colors
-				NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
-				CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
-				MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
-				break;
-			case Barcodes.MSI:
-				// Update icons
-				NumbersIconTxt.Text = "\uF299"; // Set text
-				CharsIconTxt.Text = "\uF36E"; // Set text
-				MinLengthIconTxt.Text = "\uF36E"; // Set text
+            case Barcodes.ISBN:
+                // Update icons
+                NumbersIconTxt.Text = "\uF299"; // Set text
+                CharsIconTxt.Text = "\uF36E"; // Set text
+                MinLengthIconTxt.Text = "\uF299"; // Set text
+                SpecialCharsIconTxt.Text = "\uF36E"; // Set text
 
-				// Update colors
-				NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
-				CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
-				MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
-				break;
-			case Barcodes.UPCA:
-				// Update icons
-				NumbersIconTxt.Text = "\uF299"; // Set text
-				CharsIconTxt.Text = "\uF36E"; // Set text
-				MinLengthIconTxt.Text = "\uF299"; // Set text
+                // Update text
+                MinLengthTxt.Text = $"{Properties.Resources.MinLength} - 9/10/12/13"; // Set text
 
-				// Update text
-				MinLengthTxt.Text = $"{Properties.Resources.MinLength} - 11/12"; // Set text
+                // Update colors
+                NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                SpecialCharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                break;
 
-				// Update colors
-				NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
-				CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
-				MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
-				break;
-		}
+            case Barcodes.MSI:
+                // Update icons
+                NumbersIconTxt.Text = "\uF299"; // Set text
+                CharsIconTxt.Text = "\uF36E"; // Set text
+                MinLengthIconTxt.Text = "\uF36E"; // Set text
+                SpecialCharsIconTxt.Text = "\uF36E"; // Set text
 
-		// Update Example text
-		ExampleTxt.Text = barcode switch
-		{
-			Barcodes.Code128 => $"{Properties.Resources.Example} - {Properties.Resources.Gerayis}", // Text
-			Barcodes.Code11 => $"{Properties.Resources.Example} - 456146121546", // Code11
-			Barcodes.ISBN => $"{Properties.Resources.Example} - 978146121546", // ISBN starts with 978
-			Barcodes.MSI => $"{Properties.Resources.Example} - 163657455245", // MSI
-			Barcodes.UPCA => $"{Properties.Resources.Example} - 12659456240", // UPC-A
-			_ => Properties.Resources.Gerayis // Default value
-		}; // Set text depending on the bar code type
-	}
+                // Update colors
+                NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                SpecialCharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                break;
 
-	private void BarCodeStringTxt_TextChanged(object sender, TextChangedEventArgs e)
-	{
-		UpdateValidIcon();
-	}
+            case Barcodes.UPCA:
+                // Update icons
+                NumbersIconTxt.Text = "\uF299"; // Set text
+                CharsIconTxt.Text = "\uF36E"; // Set text
+                MinLengthIconTxt.Text = "\uF299"; // Set text
 
-	private void UpdateValidIcon()
-	{
-		Regex regex = new((Barcodes)BarCodeTypeComboBox.SelectedIndex switch
-		{
-			Barcodes.Code11 => "^[0-9-]+$", // Code11 ('-' character is allowed)
-			Barcodes.Code128 => "^.[^éèàçùµ¤]+$", // Code128
-			Barcodes.ISBN => "^(?:[0-9]{9}|[0-9]{10}|[0-9]{12}|[0-9]{13})$", // ISBN
-			Barcodes.MSI => "^[0-9]+$", // MSI
-			Barcodes.UPCA => "^[0-9]{11,12}$", // UPC-A
-			_ => "^.[^éèàçùµ¤]+$" // Default value
-		});
+                // Update text
+                MinLengthTxt.Text = $"{Properties.Resources.MinLength} - 11/12"; // Set text
 
-		// Check if the string is valid
-		ValidIconTxt.Text = regex.IsMatch(BarCodeStringTxt.Text) ? "\uF299" : "\uF36E"; // Set icon depending on the result
-		ValidIconTxt.Foreground = regex.IsMatch(BarCodeStringTxt.Text) ? new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())) : new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color depending on the result
+                // Update colors
+                NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                SpecialCharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                break;
 
-	}
+            case Barcodes.Code39:
+                // Update icons
+                NumbersIconTxt.Text = "\uF299"; // Set text
+                CharsIconTxt.Text = "\uF36E"; // Set text
+                MinLengthIconTxt.Text = "\uF299"; // Set text
+                SpecialCharsIconTxt.Text = "\uF36E"; // Set text
+
+                // Update colors
+                NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                SpecialCharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color
+                break;
+
+            case Barcodes.Code39Extended:
+                // Update icons
+                NumbersIconTxt.Text = "\uF299"; // Set text
+                CharsIconTxt.Text = "\uF299"; // Set text
+                MinLengthIconTxt.Text = "\uF299"; // Set text
+                SpecialCharsIconTxt.Text = "\uF299"; // Set text
+
+                // Update colors
+                NumbersIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                CharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                MinLengthIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                SpecialCharsIconTxt.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())); // Set color
+                break;
+        }
+
+        // Update Example text
+        ExampleTxt.Text = barcode switch
+        {
+            Barcodes.Code128 => $"{Properties.Resources.Example} - {Properties.Resources.Gerayis}", // Text
+            Barcodes.Code11 => $"{Properties.Resources.Example} - 456146121546", // Code11
+            Barcodes.ISBN => $"{Properties.Resources.Example} - 978146121546", // ISBN starts with 978
+            Barcodes.MSI => $"{Properties.Resources.Example} - 163657455245", // MSI
+            Barcodes.UPCA => $"{Properties.Resources.Example} - 12659456240", // UPC-A
+            Barcodes.Code39 => $"{Properties.Resources.Example} - {Properties.Resources.GerayisUpper}", // Text
+            Barcodes.Code39Extended => $"{Properties.Resources.Example} - {Properties.Resources.GerayisUpperExt}", // Text
+            _ => Properties.Resources.Gerayis // Default value
+        }; // Set text depending on the bar code type
+    }
+
+    private void BarCodeStringTxt_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        UpdateValidIcon();
+    }
+
+    private void UpdateValidIcon()
+    {
+        Regex regex = new((Barcodes)BarCodeTypeComboBox.SelectedIndex switch
+        {
+            Barcodes.Code11 => "^[0-9-]+$", // Code11 ('-' character is allowed)
+            Barcodes.Code128 => "^.[^éèàçùµ¤]+$", // Code128
+            Barcodes.ISBN => "^(?:[0-9]{9}|[0-9]{10}|[0-9]{12}|[0-9]{13})$", // ISBN
+            Barcodes.MSI => "^[0-9]+$", // MSI
+            Barcodes.UPCA => "^[0-9]{11,12}$", // UPC-A
+            Barcodes.Code39 => @"^[A-Z0-9\-\.\/\$\+\% ]+$",
+            Barcodes.Code39Extended => @"^([A-Z0-9\-\.\/\$\+\% ]|[\/\+\%][A-Z])+$",
+            _ => "^.[^éèàçùµ¤]+$" // Default value
+        });
+
+        // Check if the string is valid
+        ValidIconTxt.Text = regex.IsMatch(BarCodeStringTxt.Text) ? "\uF299" : "\uF36E"; // Set icon depending on the result
+        ValidIconTxt.Foreground = regex.IsMatch(BarCodeStringTxt.Text) ? new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Green"].ToString())) : new SolidColorBrush((Color)ColorConverter.ConvertFromString(App.Current.Resources["Red2"].ToString())); // Set color depending on the result
+
+    }
 }

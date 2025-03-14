@@ -223,7 +223,7 @@
     <value>Licenses</value>
   </data>
   <data name="SeeLicenses" xml:space="preserve">
-    <value>See licenses</value>
+    <value>View licenses</value>
   </data>
   <data name="CheckUpdatesOnStart" xml:space="preserve">
     <value>Check updates on start</value>
@@ -324,8 +324,11 @@
   <data name="History" xml:space="preserve">
     <value>History</value>
   </data>
+  <data name="SeeFormattingInfo" xml:space="preserve">
+    <value>View formatting information</value>
+  </data>
   <data name="SeeFullBarCode" xml:space="preserve">
-    <value>See bar code in a separated window</value>
+    <value>View bar code in a separated window</value>
   </data>
   <data name="DefaultBarCodeFileExtension" xml:space="preserve">
     <value>Default bar code save format</value>
@@ -391,7 +394,7 @@
     <value>Default page on start.</value>
   </data>
   <data name="SeeFullQrCode" xml:space="preserve">
-    <value>See QR Code in a separated window</value>
+    <value>View QR Code in a separated window</value>
   </data>
   <data name="GenerateBarCode" xml:space="preserve">
     <value>Generate a bar code</value>
@@ -435,5 +438,17 @@ This action cannot be cancelled.</value>
   </data>
   <data name="UseQrixMsg" xml:space="preserve">
     <value>Gerayis has evolved into a web app - it is now called Qrix. Gerayis for desktop is longer supported, do you want to launch Qrix?</value>
+  </data>
+  <data name="Code39" xml:space="preserve">
+    <value>Code39</value>
+  </data>
+  <data name="Code39Extended" xml:space="preserve">
+    <value>Code39 Ext.</value>
+  </data>
+  <data name="GerayisUpper" xml:space="preserve">
+    <value>GERAYIS.123</value>
+  </data>
+  <data name="GerayisUpperExt" xml:space="preserve">
+    <value>GERAYIS-123</value>
   </data>
 </root>

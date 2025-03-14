@@ -104,10 +104,10 @@ public partial class MainWindow : Window
 
 		PageContent.Navigated += (o, e) => AnimatePage();
 
-		if (MessageBox.Show(Properties.Resources.UseQrixMsg, Properties.Resources.LaunchQrix, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-		{
-			Process.Start("explorer.exe", "https://qrix.leocorporation.dev");
-		}
+		//if (MessageBox.Show(Properties.Resources.UseQrixMsg, Properties.Resources.LaunchQrix, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+		//{
+		//	Process.Start("explorer.exe", "https://qrix.leocorporation.dev");
+		//}
 	}
 
 	private void CheckButton(Button button)

@@ -233,6 +233,24 @@ namespace Gerayis.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code39.
+        /// </summary>
+        public static string Code39 {
+            get {
+                return ResourceManager.GetString("Code39", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code39 Ext..
+        /// </summary>
+        public static string Code39Extended {
+            get {
+                return ResourceManager.GetString("Code39Extended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string Copy {
@@ -418,6 +436,24 @@ namespace Gerayis.Properties {
         public static string Gerayis {
             get {
                 return ResourceManager.GetString("Gerayis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GERAYIS.123.
+        /// </summary>
+        public static string GerayisUpper {
+            get {
+                return ResourceManager.GetString("GerayisUpper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GERAYIS-123.
+        /// </summary>
+        public static string GerayisUpperExt {
+            get {
+                return ResourceManager.GetString("GerayisUpperExt", resourceCulture);
             }
         }
         
@@ -800,7 +836,16 @@ namespace Gerayis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See bar code in a separated window.
+        ///   Looks up a localized string similar to View formatting information.
+        /// </summary>
+        public static string SeeFormattingInfo {
+            get {
+                return ResourceManager.GetString("SeeFormattingInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View bar code in a separated window.
         /// </summary>
         public static string SeeFullBarCode {
             get {
@@ -809,7 +854,7 @@ namespace Gerayis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See QR Code in a separated window.
+        ///   Looks up a localized string similar to View QR Code in a separated window.
         /// </summary>
         public static string SeeFullQrCode {
             get {
@@ -818,7 +863,7 @@ namespace Gerayis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See licenses.
+        ///   Looks up a localized string similar to View licenses.
         /// </summary>
         public static string SeeLicenses {
             get {
